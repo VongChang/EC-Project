@@ -21,6 +21,7 @@
     },
     {
         "question": "What happens when a process calls x.wait() on a condition variable?",
+        "image": "",
         "options": [
             "  A) It immediately resumes execution",
             "  B) It suspends itself and releases the monitor lock",
