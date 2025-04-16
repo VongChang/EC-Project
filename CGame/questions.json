@@ -1,0 +1,43 @@
+[
+    {
+        "question": "What is the capital of France?",
+        "options": [
+            "Berlin",
+            "London",
+            "Paris",
+            "Rome"
+        ],
+        "answer": 2
+    },
+    {
+        "question": "What does CPU stand for?",
+        "options": [
+            "Central Process Unit",
+            "Computer Personal Unit",
+            "Central Processing Unit",
+            "Central Processor"
+        ],
+        "answer": 2
+    },
+    {
+        "question": "Which symbol is used for comments in Python?",
+        "options": [
+            "//",
+            "<!-- -->",
+            "#",
+            "/* */"
+        ],
+        "answer": 2
+    },
+    {
+        "question": "Which image shows a cat?",
+        "image": "cat.png",
+        "options": [
+            "Dog",
+            "Cat",
+            "Rabbit",
+            "Bird"
+        ],
+        "answer": 1
+    }
+]
