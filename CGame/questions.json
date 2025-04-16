@@ -1,11 +1,11 @@
 [
     {
-        "question": "What is the capital of France?",
+        "question": "What is a monitor in process synchronization?",
         "options": [
-            "Berlin",
-            "London",
-            "Paris",
-            "Rome"
+            "  A) A low-level synchronization tool like a spinlock",
+            "  B) An operating system service that handles user I/O",
+            "  C) A high-level abstraction for synchronization, built on top of semaphores",
+            "  D) A tool for detecting deadlocks"
         ],
         "answer": 2
     },

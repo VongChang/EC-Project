@@ -2,12 +2,12 @@
 # A GUI-based Kahoot-style quiz game using OS concepts in Python
 
 # --- Standard Library Imports ---
-import json  # For loading question data from a JSON file
-import time  # For timer delays
-import threading  # Used for timer thread - OS Concept: Threading
-import multiprocessing  # Used to spawn child processes - OS Concept: Process Creation
-from multiprocessing import Process, Queue, Lock  # Queue for IPC, Lock for synchronization
-from tkinter import Tk, Label, Button, StringVar, Frame, PhotoImage, Scrollbar, Text  # GUI Components
+import json
+import time
+import threading
+import multiprocessing
+from multiprocessing import Process, Queue, Lock
+from tkinter import Tk, Label, Button, StringVar, Frame, PhotoImage, Scrollbar, Text
 import random
 import os
 
@@ -18,7 +18,6 @@ def load_questions(filename):
 
 # --- Threading Example: Countdown Timer Thread ---
 def start_timer(duration, update_func, done_event):
-    # OS Concept: Threading - separate thread updates the timer every second
     for i in range(duration, -1, -1):
         if done_event.is_set():
             break
@@ -29,9 +28,6 @@ def start_timer(duration, update_func, done_event):
 
 # --- Multiprocessing + IPC + Synchronization Example ---
 def player_process(answer_index, correct_index, result_queue, lock):
-    # OS Concept: Process Creation - runs in a separate process
-    # OS Concept: Synchronization - lock prevents race condition
-    # OS Concept: IPC - result is passed via queue
     with lock:
         if answer_index == correct_index:
             result_queue.put(1)
@@ -43,18 +39,17 @@ class QuizGameGUI:
     def __init__(self, root, question_file):
         self.root = root
         self.root.title("OS Concepts Quiz Game")
-        self.root.attributes('-fullscreen', True)  # Start fullscreen
+        self.root.attributes('-fullscreen', True)
 
-        self.questions = load_questions(question_file)  # Load questions
-        self.score = 0  # Track player score
-        self.lock = Lock()  # OS Concept: Synchronization
-        self.result_queue = Queue()  # OS Concept: IPC
+        self.questions = load_questions(question_file)
+        self.score = 0
+        self.lock = Lock()
+        self.result_queue = Queue()
         self.current_question = 0
         self.selected_answer = None
         self.answers_given = []
-        self.accepting_input = True  # Prevent spamming inputs
+        self.accepting_input = True
 
-        # Tkinter StringVars allow UI updates
         self.question_var = StringVar()
         self.timer_var = StringVar()
         self.feedback_var = StringVar()
@@ -64,43 +59,46 @@ class QuizGameGUI:
         self.setup_gui()
         self.show_question()
 
-    # --- Setup GUI Layout and Buttons ---
     def setup_gui(self):
         Label(self.root, textvariable=self.timer_var, font=("Arial", 20)).pack(pady=10)
         Label(self.root, textvariable=self.question_var, wraplength=1000, font=("Arial", 24)).pack(pady=10)
 
-        self.image_label = Label(self.root)  # For showing optional image
+        self.image_label = Label(self.root)
         self.image_label.pack(pady=10)
 
-        # Spacer frame for layout
         Frame(self.root, height=100).pack(expand=True)
 
         self.button_frame = Frame(self.root)
-        self.button_frame.pack(pady=20)
+        self.button_frame.pack(pady=20, fill="x", expand=True)
 
-        # Create 4 buttons in a 2x2 grid
+        # Allow buttons to expand horizontally
+        for col in range(2):
+            self.button_frame.grid_columnconfigure(col, weight=1)
+
         for i in range(4):
             btn = Button(
-                self.button_frame, text="", font=("Arial", 20), width=30, height=3,
+                self.button_frame,
+                text="",
+                font=("Arial", 20),
+                height=4,
+                wraplength=500,  # Enables wrapping
                 command=lambda i=i: self.submit_answer(i)
             )
             row, col = divmod(i, 2)
-            btn.grid(row=row, column=col, padx=20, pady=10)
+            btn.grid(row=row, column=col, padx=20, pady=10, sticky="ew")
             self.buttons.append(btn)
 
         Label(self.root, textvariable=self.feedback_var, font=("Arial", 20)).pack(pady=20)
         Button(self.root, text="Exit", font=("Arial", 14), command=self.root.destroy).pack(pady=5)
 
-    # --- Display the Current Question ---
     def show_question(self):
         if self.current_question >= len(self.questions):
             self.end_game()
             return
 
         q = self.questions[self.current_question]
-        self.question_var.set(q['question'])  # Set question text
+        self.question_var.set(q['question'])
 
-        # Load and show image if present
         if 'image' in q:
             try:
                 img = PhotoImage(file=q['image'])
@@ -113,62 +111,51 @@ class QuizGameGUI:
             self.image_label.configure(image='')
             self.image_label.image = None
 
-        # Populate answer buttons
         for i, opt in enumerate(q['options']):
             self.buttons[i].config(text=opt, state='normal')
 
         self.feedback_var.set("")
         self.selected_answer = None
-        self.accepting_input = False  # Prevent instant clicking
+        self.accepting_input = False
 
-        # Stop previous timer thread safely
         if hasattr(self, 'timer_done') and not self.timer_done.is_set():
             self.timer_done.set()
         if hasattr(self, 'timer_thread') and self.timer_thread.is_alive():
             self.timer_thread.join()
 
-        # Add short delay to block answer spamming
-        self.root.after(100, lambda: setattr(self, 'accepting_input', True))  # 100ms unlock input
+        self.root.after(100, lambda: setattr(self, 'accepting_input', True))
 
-        # Start 30s countdown timer using thread
         self.timer_done = threading.Event()
         self.timer_thread = threading.Thread(target=start_timer, args=(30, self.update_timer, self.timer_done))
         self.timer_thread.start()
 
-        # After 31s, check if time ran out
         self.root.after(31000, self.check_timer)
 
-    # --- Update Timer Text on Screen ---
     def update_timer(self, value):
         self.timer_var.set(f"Time Left: {value} seconds")
 
-    # --- Handle Timer Expiry (No Answer Selected) ---
     def check_timer(self):
         if not self.timer_done.is_set():
             self.timer_done.set()
-            self.submit_answer(-1)  # No answer submitted
+            self.submit_answer(-1)
 
-    # --- Handle User Answer ---
     def submit_answer(self, index):
         if not self.accepting_input:
             return
         self.accepting_input = False
 
-        # Disable buttons to prevent further input
         for btn in self.buttons:
             btn.config(state='disabled')
 
         q = self.questions[self.current_question]
         self.selected_answer = index
 
-        # OS Concept: Process Creation + IPC + Lock
         p = Process(target=player_process, args=(index, q['answer'], self.result_queue, self.lock))
         p.start()
         p.join()
 
-        result = self.result_queue.get()  # OS Concept: Inter-Process Communication (IPC)
+        result = self.result_queue.get()
 
-        # Display feedback based on correctness
         if result == 1:
             self.feedback_var.set("Correct! ✅")
             self.score += 1
@@ -183,9 +170,8 @@ class QuizGameGUI:
             ))
 
         self.current_question += 1
-        self.root.after(3000, self.show_question)  # Wait 4s before next question
+        self.root.after(3000, self.show_question)
 
-    # --- Display Final Score and Review ---
     def end_game(self):
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -210,10 +196,7 @@ class QuizGameGUI:
 
 # --- Main Entry Point ---
 if __name__ == '__main__':
-    # Required for Windows multiprocessing support
     multiprocessing.freeze_support()
-
-    # Start the game
     root = Tk()
     app = QuizGameGUI(root, "questions.json")
     root.mainloop()
