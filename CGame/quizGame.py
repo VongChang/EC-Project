@@ -49,6 +49,7 @@ class QuizGameGUI:
         self.selected_answer = None
         self.answers_given = []
         self.accepting_input = True
+        self.timer_done = threading.Event()
 
         self.question_var = StringVar()
         self.timer_var = StringVar()
@@ -71,7 +72,6 @@ class QuizGameGUI:
         self.button_frame = Frame(self.root)
         self.button_frame.pack(pady=20, fill="x", expand=True)
 
-        # Allow buttons to expand horizontally
         for col in range(2):
             self.button_frame.grid_columnconfigure(col, weight=1)
 
@@ -81,7 +81,7 @@ class QuizGameGUI:
                 text="",
                 font=("Arial", 20),
                 height=4,
-                wraplength=500,  # Enables wrapping
+                wraplength=500,
                 command=lambda i=i: self.submit_answer(i)
             )
             row, col = divmod(i, 2)
@@ -116,16 +116,14 @@ class QuizGameGUI:
 
         self.feedback_var.set("")
         self.selected_answer = None
-        self.accepting_input = False
+        self.accepting_input = True  # Allow input only after showing the question
 
         if hasattr(self, 'timer_done') and not self.timer_done.is_set():
             self.timer_done.set()
         if hasattr(self, 'timer_thread') and self.timer_thread.is_alive():
             self.timer_thread.join()
 
-        self.root.after(100, lambda: setattr(self, 'accepting_input', True))
-
-        self.timer_done = threading.Event()
+        self.timer_done.clear()
         self.timer_thread = threading.Thread(target=start_timer, args=(30, self.update_timer, self.timer_done))
         self.timer_thread.start()
 
@@ -141,9 +139,9 @@ class QuizGameGUI:
 
     def submit_answer(self, index):
         if not self.accepting_input:
-            return
-        self.accepting_input = False
+            return  # Ignore submission if input is not being accepted
 
+        self.accepting_input = False
         for btn in self.buttons:
             btn.config(state='disabled')
 
@@ -163,11 +161,7 @@ class QuizGameGUI:
         else:
             correct_text = q['options'][q['answer']]
             self.feedback_var.set(f"Incorrect ❌. Correct: {correct_text}")
-            self.answers_given.append((
-                q['question'],
-                q['options'][index] if index != -1 and index < len(q['options']) else "No Answer",
-                f"Correct: {correct_text}"
-            ))
+            self.answers_given.append((q['question'], q['options'][index] if index != -1 else "No Answer", f"Correct: {correct_text}"))
 
         self.current_question += 1
         self.root.after(3000, self.show_question)

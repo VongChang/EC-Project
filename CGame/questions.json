@@ -10,24 +10,24 @@
         "answer": 2
     },
     {
-        "question": "What does CPU stand for?",
+        "question": "Which of the following is TRUE about monitors?",
         "options": [
-            "Central Process Unit",
-            "Computer Personal Unit",
-            "Central Processing Unit",
-            "Central Processor"
+            "  A) Multiple processes can execute inside the monitor at once",
+            "  B) Only processes created by the monitor can use it",
+            "  C) Only one process may be active within the monitor at a time",
+            "  D) Monitors do not allow the use of condition variables"
         ],
         "answer": 2
     },
     {
-        "question": "Which symbol is used for comments in Python?",
+        "question": "What happens when a process calls x.wait() on a condition variable?",
         "options": [
-            "//",
-            "<!-- -->",
-            "#",
-            "/* */"
+            "  A) It immediately resumes execution",
+            "  B) It suspends itself and releases the monitor lock",
+            "  C) It blocks all other processes from entering the monitor",
+            "  D) It terminates execution"
         ],
-        "answer": 2
+        "answer": 1
     },
     {
         "question": "Which image shows a cat?",
