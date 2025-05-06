@@ -1,0 +1,7 @@
+A ___ is a high level abstraction that provides a mechanism for process synchronization and is built on top of semaphores.|monitor
+Inside a monitor, only one ___ can be active at a time.|process
+A monitor groups together shared data and the ___ that operate on them.|procedures
+To wait for a certain condition in a monitor, a process uses the ___ operation.|wait
+To wake a waiting process in a monitor, a process uses the ___ operation.|signal
+The two styles of signaling are "signal and wait" and "signal and ___".|continue
+A variable used for waiting and signaling inside a monitor is called a ___.|condition
