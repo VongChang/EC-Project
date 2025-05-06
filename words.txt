@@ -5,3 +5,15 @@ To wait for a certain condition in a monitor, a process uses the ___ operation.|
 To wake a waiting process in a monitor, a process uses the ___ operation.|signal
 The two styles of signaling are "signal and wait" and "signal and ___".|continue
 A variable used for waiting and signaling inside a monitor is called a ___.|condition
+The Deadlock Problem refers to a situation where a set of blocked processes each holding a _________ and waiting to acquire a resource held by another process in the set.|resource
+In a deadlock, processes never finish executing, and system resources are tied up, preventing other jobs from ________.|starting
+A system consists of a finite number of _________ to be distributed among a number of competing processes.|resources
+The four necessary conditions for a deadlock to occur are: Mutual exclusion, Hold and Wait, No preemption, and _________.|circular wait
+A _________ edge in a Resource Allocation Graph signifies that process Pi has requested an instance of resource type Rj and is currently waiting for that resource.|requested
+If the graph contains no cycles, then no process in the system is _________.|deadlocked
+The system is in a _________ state if there exists a sequence of processes that ensures each process can eventually acquire the resources it needs to complete execution.|safe
+Deadlock _________ involves ensuring that the system never enters a deadlock state by using a protocol that prevents one of the four necessary conditions from holding.|prevention
+The _________ algorithm is used to avoid deadlock when there are multiple instances of a resource type by analyzing the system's state to ensure that a circular-wait condition will never arise.|banker
+The system can go from a safe state to an _________ state if a process requests a resource and no longer satisfies the safety condition.|unsafe
+In a deadlock _________ system, the system examines the state of the system to detect deadlocks and recover from them.|detection
+In deadlock prevention, we ensure that at least one of the four necessary conditions cannot hold, thus preventing the occurrence of _________.|deadlock

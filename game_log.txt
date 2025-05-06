@@ -1,7 +1,0 @@
-Result: Win | Word: monitor | Question: A ___ is a high level abstraction that provides a mechanism for process synchronization and is built on top of semaphores.
-Result: Win | Word: process | Question: Inside a monitor, only one ___ can be active at a time.
-Result: Win | Word: process | Question: Inside a monitor, only one ___ can be active at a time.
-Result: Win | Word: wait | Question: To wait for a certain condition in a monitor, a process uses the ___ operation.
-Result: Win | Word: signal | Question: To wake a waiting process in a monitor, a process uses the ___ operation.
-Result: Win | Word: monitor | Question: A ___ is a high level abstraction that provides a mechanism for process synchronization and is built on top of semaphores.
-Result: Lose | Word: continue | Question: The two styles of signaling are "signal and wait" and "signal and ___".
